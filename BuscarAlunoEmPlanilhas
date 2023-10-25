@@ -1,0 +1,23 @@
+Function BuscarAlunoEmPlanilhas(nomeAluno As String) As String
+    Dim ws As Worksheet
+    Dim lastRow As Long
+    Dim foundCell As Range
+
+    ' Percorre todas as planilhas do workbook
+    For Each ws In ThisWorkbook.Worksheets
+        ' Ignora a planilha "BUSCA"
+        If ws.Name <> "BUSCA" Then
+            ' Procura o nome do aluno na coluna A
+            Set foundCell = ws.Range("A:A").Find(nomeAluno)
+            ' Se encontrar...
+            If Not foundCell Is Nothing Then
+                ' Retorna o nome da planilha e o valor da coluna B na mesma linha do aluno encontrado
+                BuscarAlunoEmPlanilhas = "Encontrado em: " & ws.Name & " " & ws.Cells(foundCell.Row, 2).Value
+                Exit Function
+            End If
+        End If
+    Next ws
+
+    ' Se não encontrar em nenhuma planilha
+    BuscarAlunoEmPlanilhas = "Aluno não encontrado."
+End Function
