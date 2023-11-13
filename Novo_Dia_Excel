@@ -1,0 +1,29 @@
+Sub novo_dia()
+    Dim ws As Worksheet
+    Dim newWs As Worksheet
+    Dim diaAtual As String
+
+    'Define o nome da planilha que será copiada
+    Set ws = ThisWorkbook.Sheets("SEMANA")
+
+    'Define o nome da nova planilha com o dia atual
+    diaAtual = Day(Now)
+
+    'Checa se a planilha com o nome do dia atual já existe
+    If Not WorksheetExists(diaAtual) Then
+        'Copia a planilha
+        ws.Copy After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)
+
+        'Nomeia a nova planilha com o dia atual
+        Set newWs = ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)
+        newWs.Name = diaAtual
+    End If
+End Sub
+
+Function WorksheetExists(sName As String) As Boolean
+    Dim ws As Worksheet
+    On Error Resume Next
+    Set ws = ThisWorkbook.Sheets(sName)
+    On Error GoTo 0
+    If Not ws Is Nothing Then WorksheetExists = True
+End Function
