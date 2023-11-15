@@ -1,0 +1,42 @@
+Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+Declare Function GetKeyState Lib "user32" (ByVal nVirtKey As Long) As Integer
+Public Const VK_NUMLOCK = &H90
+Public Const KEYEVENTF_EXTENDEDKEY = &H1
+Public Const KEYEVENTF_KEYUP = &H2
+Declare Function keybd_event Lib "user32" (ByVal bVk As Byte, _
+                                           ByVal bScan As Byte, _
+                                           ByVal dwFlags As Long, _
+                                           ByVal dwExtraInfo As Long) As Long
+
+Sub MoveCursor()
+    ' Digita o caractere "." e pressiona Ctrl + Enter
+    Application.SendKeys ".^~", True
+    
+    ' Aguarda o processamento do comando anterior
+    Sleep 1000
+    
+    ' Simula pressionar Ctrl + Right, Ctrl + Right e Left, tudo como uma sequência única
+    Application.SendKeys "^{RIGHT}^{RIGHT}^{LEFT}", True
+
+    ' Aguarda o processamento do comando anterior
+    Sleep 500
+    
+    ' Simula pressionar Shift + F2
+    Application.SendKeys "+{F2}", True
+    
+    ' Salva o workbook
+    ActiveWorkbook.Save
+    
+    ' Chama a função para ligar o Num Lock
+    TurnNumLockOn
+End Sub
+
+Sub TurnNumLockOn()
+    Dim numLockState As Integer
+    numLockState = GetKeyState(VK_NUMLOCK)
+    If numLockState = 1 Then Exit Sub ' If NumLock is already on, do nothing
+    
+    ' Simulate pressing the NumLock key to turn it on
+    keybd_event VK_NUMLOCK, 0, KEYEVENTF_EXTENDEDKEY Or 0, 0
+    keybd_event VK_NUMLOCK, 0, KEYEVENTF_EXTENDEDKEY Or KEYEVENTF_KEYUP, 0
+End Sub
